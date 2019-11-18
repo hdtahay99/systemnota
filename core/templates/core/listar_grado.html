@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}			
+	{% block content %}		
+			{% for pub in pubs %}
+	            <div class="post">
+	  
+	                <h1><a href="#">{{ pub.name }}</a></h1>
+	                <p>{{pub.seccion }}</p>
+	                
+	            </div>
+	    	
+        	{% endfor %}
+        {% endblock %}

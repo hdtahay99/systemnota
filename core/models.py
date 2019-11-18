@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import admin
 
 # Create your models here.
 
@@ -13,7 +14,7 @@ class Profesor(models.Model):
         verbose_name_plural = "Profesores"
         ordering = ['-created']
 
-    def __str_(self):
+    def __str__(self):
         return self.name 
 
 class Materia(models.Model):
@@ -27,22 +28,20 @@ class Materia(models.Model):
         verbose_name_plural ="Materias"
         ordering = ['-created']
 
-    def __str_(self):
+    def __str__(self):
         return self.name
 
 class Grado(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Nombre")
+    name = models.CharField(max_length=100)
     seccion = models.CharField(max_length=10, verbose_name="Seccion")
-    materias = models.ManyToManyField(Materia,related_name="get_materias", verbose_name="Materias")
-    created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de actualización")
+    materias = models.ManyToManyField(Materia,verbose_name='Pensum')
+
     
     class Meta:
         verbose_name = "Grado"
         verbose_name_plural = "Grados"
-        ordering = ['-created']
 
-    def __str_(self):
+    def __str__(self):
         return self.name  
 
 class Estudiante(models.Model):
@@ -58,8 +57,12 @@ class Estudiante(models.Model):
         verbose_name_plural = "Estudiantes"
         ordering = ['-created']
 
-    def __str_(self):
+    def __str__(self):
         return self.name
+
+class Pensum(models.Model):
+    materia = models.ForeignKey(Materia,on_delete=models.CASCADE)
+    grado = models.ForeignKey(Grado, on_delete=models.CASCADE)
 
 class Nota(models.Model):
     estudiante = models.ForeignKey(Estudiante, verbose_name="Estudiante", on_delete=models.CASCADE)
@@ -70,7 +73,18 @@ class Nota(models.Model):
         verbose_name = "Nota"
         verbose_name_plural = "Notas"
 
-    def __str_(self):
+    def __str__(self):
         return self.nota
+
+class PensumInLine(admin.TabularInline):
+    model = Pensum
+    extra = 1
+
+class MateriaAdmin(admin.ModelAdmin):
+    	inlines= (PensumInLine,)
+
+class GradoAdmin(admin.ModelAdmin):
+	inlines = (PensumInLine,)
+
 
 
